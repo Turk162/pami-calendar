@@ -1,0 +1,415 @@
+:root {
+            --gold: #d4af37;
+            --gold-light: #f4e4ba;
+            --burgundy: #722f37;
+            --burgundy-dark: #4a1f24;
+            --cream: #fdf8e8;
+            --forest: #1a3c34;
+            --forest-dark: #0d1f1a;
+            --snow: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background: linear-gradient(180deg, var(--forest-dark) 0%, var(--forest) 50%, var(--burgundy-dark) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        /* EFFETTO NEVE */
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: var(--snow);
+            font-size: 1rem;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        /* HEADER */
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+            position: relative;
+        }
+
+        .book-ornament {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px var(--gold);
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: var(--gold);
+            text-shadow: 2px 2px 4px var(--shadow), 0 0 30px rgba(212, 175, 55, 0.3);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--gold-light);
+            opacity: 0.9;
+        }
+
+        .author {
+            font-style: italic;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+
+        /* DECORAZIONI LATERALI */
+        .holly-left, .holly-right {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        .holly-left { left: 1rem; top: 50%; transform: translateY(-50%); }
+        .holly-right { right: 1rem; top: 50%; transform: translateY(-50%); }
+
+        @media (max-width: 768px) {
+            .holly-left, .holly-right { display: none; }
+        }
+
+        /* CALENDARIO */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .calendar {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0.5rem;
+                padding: 0.5rem;
+            }
+        }
+
+        /* CASELLE DEL GIORNO */
+        .day-box {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+            border: 3px solid var(--gold);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 15px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .day-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L30 60M0 30L60 30' stroke='%23d4af37' stroke-width='0.5' opacity='0.1'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .day-box:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px var(--shadow), 0 0 20px rgba(212, 175, 55, 0.3);
+            border-color: var(--gold-light);
+        }
+
+        .day-box.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(30%);
+        }
+
+        .day-box.locked:hover {
+            transform: none;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .day-box.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 0.8rem;
+        }
+
+        .day-box.opened {
+            background: linear-gradient(145deg, var(--forest) 0%, var(--forest-dark) 100%);
+        }
+
+        .day-box.today {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 4px 15px var(--shadow), 0 0 20px rgba(212, 175, 55, 0.5); }
+            50% { box-shadow: 0 4px 15px var(--shadow), 0 0 40px rgba(212, 175, 55, 0.8); }
+        }
+
+        .day-number {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px var(--shadow);
+            line-height: 1;
+        }
+
+        .day-title {
+            font-size: 0.7rem;
+            color: var(--gold-light);
+            text-align: center;
+            margin-top: 0.3rem;
+            opacity: 0.9;
+            padding: 0 0.3rem;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 600px) {
+            .day-number { font-size: 1.5rem; }
+            .day-title { display: none; }
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(180deg, var(--cream) 0%, #e8dcc8 100%);
+            color: var(--burgundy-dark);
+            max-width: 800px;
+            width: 100%;
+            margin: 2rem auto;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+            animation: modalIn 0.4s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+            color: var(--gold);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: transform 0.2s;
+        }
+
+        .modal-close:hover { transform: scale(1.2); }
+
+        .modal-stave {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .modal-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin: 0.5rem 0;
+        }
+
+        .modal-day {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.3rem;
+            color: var(--gold-light);
+        }
+
+        .modal-body { padding: 2rem; }
+
+        .audio-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--gold-light);
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .audio-section h3 {
+            font-family: 'Cinzel Decorative', serif;
+            text-align: center;
+            color: var(--burgundy-dark);
+            margin-bottom: 0.75rem;
+        }
+        audio {
+            width: 100%;
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 1.5rem;
+        }
+
+        .story-text p {
+            margin-bottom: 1em;
+        }
+
+        .story-text p:first-child::first-letter {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 3.5rem;
+            float: left;
+            line-height: 1;
+            padding-right: 0.5rem;
+            color: var(--burgundy);
+        }
+
+        .quote-box {
+            clear: both;
+            background: var(--burgundy);
+            color: var(--gold-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            font-style: italic;
+            font-size: 1.2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '"';
+            font-family: 'Great Vibes', cursive;
+            font-size: 4rem;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            opacity: 0.3;
+        }
+
+        .illustration {
+            float: left;
+            margin: 0 1.5rem 1rem 0;
+            max-width: 280px;
+        }
+
+        .illustration img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 600px) {
+            .illustration {
+                float: none;
+                max-width: 100%;
+                margin: 0 0 1rem 0;
+            }
+        }
+
+        .music-section {
+            background: var(--forest-dark);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .music-section h3 {
+            color: var(--gold);
+            font-family: 'Cinzel Decorative', serif;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .deezer-player {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gold-light);
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .heart {
+            color: #e74c3c;
+            animation: heartbeat 1s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }

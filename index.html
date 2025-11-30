@@ -1074,17 +1074,41 @@ text: `<p>Scrooge non se lo fece dire due volte e vi si tenne saldo.
 
 // GENERA I FIOCCHI DI NEVE
 function createSnowflakes() {
-    // ... (funzione omessa per brevità, è rimasta invariata)
+    const container = document.getElementById('snowflakes');
+    const snowChars = ['❄', '❅', '❆', '✻', '✼', '❋'];
+
+    for (let i = 0; i < 50; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = snowChars[Math.floor(Math.random() * snowChars.length)];
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'rem';
+        snowflake.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        snowflake.style.animationDelay = (Math.random() * 10) + 's';
+        snowflake.style.opacity = Math.random() * 0.6 + 0.2;
+        container.appendChild(snowflake);
+    }
 }
 
+// ═══════════════════════════════════════════════════════════════════════
 // CONTROLLA SE UN GIORNO È SBLOCCATO (Giorno 1 sempre aperto)
+// ═══════════════════════════════════════════════════════════════════════
 function isDayUnlocked(day) {
     // ECCEZIONE: Il Giorno 1 è sempre sbloccato
     if (day === 1) {
         return true;
     }
+
+    // Logica standard: sblocca il giorno corrente e i giorni passati di Dicembre.
     const today = new Date();
-    const dayDate = new Date(today.getFullYear(), 11, day); 
+    const currentYear = today.getFullYear();
+
+    let adventYear = currentYear;
+
+    // Crea la data del giorno dell'avvento (1-25 dicembre)
+    const dayDate = new Date(adventYear, 11, day); // Mese 11 = Dicembre
+
+    // Sblocca se oggi è >= la data del giorno
     return today >= dayDate;
 }
 
@@ -1096,7 +1120,36 @@ function isToday(day) {
 
 // GENERA IL CALENDARIO
 function generateCalendar() {
-    // ... (funzione omessa per brevità, è rimasta invariata)
+    const calendar = document.getElementById('calendar');
+
+    adventData.forEach(item => {
+        const dayBox = document.createElement('div');
+        dayBox.className = 'day-box';
+        dayBox.dataset.day = item.day;
+
+        const unlocked = isDayUnlocked(item.day);
+        const today = isToday(item.day);
+
+        if (!unlocked) {
+            dayBox.classList.add('locked');
+        } else {
+            if (localStorage.getItem(`advent_day_${item.day}`)) {
+                dayBox.classList.add('opened');
+            }
+            if (today) {
+                dayBox.classList.add('today');
+            }
+            // Aggiunge l'event listener solo per i giorni sbloccati
+            dayBox.addEventListener('click', () => openDay(item.day));
+        }
+
+        dayBox.innerHTML = `
+            <span class="day-number">${item.day}</span>
+            <span class="day-title">${item.title}</span>
+        `;
+
+        calendar.appendChild(dayBox);
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════════════

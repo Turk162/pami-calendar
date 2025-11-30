@@ -1068,7 +1068,7 @@ text: `<p>Scrooge non se lo fece dire due volte e vi si tenne saldo.
             }
         ];
 
- // ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════
 // FUNZIONI
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -1153,7 +1153,7 @@ function generateCalendar() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// APRI UN GIORNO (Rimosso 'async' e il 'fetch' per usare il testo inline)
+// APRI UN GIORNO
 // ═══════════════════════════════════════════════════════════════════════
 function openDay(day) {
     const data = adventData.find(d => d.day === day);
@@ -1175,20 +1175,29 @@ function openDay(day) {
     document.getElementById('modal-stave').textContent = data.stave;
     document.getElementById('modal-title').textContent = `"${data.title}"`;
     document.getElementById('modal-day').textContent = `Giorno ${day}`;
-    
-    // TORNA A USARE IL TESTO DIRETTO DA adventData
-    document.getElementById('modal-text').innerHTML = data.text; 
+    document.getElementById('modal-text').innerHTML = data.text; // Testo inline
 
     document.getElementById('modal-quote').textContent = data.quote;
     document.getElementById('modal-image').src = data.image;
     document.getElementById('modal-image').alt = data.title;
 
+    // ───────────────────────────────────────────────────────────────────────
     // AGGIORNA IL PERCORSO DEI FILES AUDIO
+    // ───────────────────────────────────────────────────────────────────────
     const audioPlayer = document.getElementById('audio-player');
     const audioBaseUrl = 'https://symphonyguide.gt.tc/audio/';
-    audioPlayer.src = `${audioBaseUrl}${data.day}.mp3`;
+    
+    // Costruisce l'URL completo del file (es. https://symphonyguide.gt.tc/audio/1.mp3)
+    const audioFileName = `${data.day}.mp3`;
+    audioPlayer.src = `${audioBaseUrl}${audioFileName}`; 
+    
+    // Per debug, visualizza l'URL in console
+    console.log(`Tentativo di caricamento audio: ${audioPlayer.src}`); 
+    
     audioPlayer.load();
-
+    // Non è necessario usare audioPlayer.play() qui; l'utente dovrebbe premere play.
+    
+    // Ripristina e riavvia il player Deezer
     const deezerUrl = `https://widget.deezer.com/widget/dark/track/${data.deezerId}?tracklist=false`;
     document.getElementById('deezer-player').src = deezerUrl;
 
@@ -1200,11 +1209,14 @@ function openDay(day) {
 function closeModal() {
     document.getElementById('modal').classList.remove('active');
     document.body.style.overflow = '';
+    
+    // Interrompe il player Deezer
     document.getElementById('deezer-player').src = '';
 
+    // Mette in pausa e svuota il player audio
     const audioPlayer = document.getElementById('audio-player');
     audioPlayer.pause();
-    audioPlayer.src = '';
+    audioPlayer.src = ''; 
 }
 
 document.getElementById('modal').addEventListener('click', (e) => {

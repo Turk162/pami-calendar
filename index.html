@@ -1153,7 +1153,7 @@ function generateCalendar() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// APRI UN GIORNO
+// APRI UN GIORNO (Modificato per usare Google Drive)
 // ═══════════════════════════════════════════════════════════════════════
 function openDay(day) {
     const data = adventData.find(d => d.day === day);
@@ -1182,20 +1182,21 @@ function openDay(day) {
     document.getElementById('modal-image').alt = data.title;
 
     // ───────────────────────────────────────────────────────────────────────
-    // AGGIORNA IL PERCORSO DEI FILES AUDIO
+    // CARICAMENTO FILE AUDIO DA GOOGLE DRIVE
     // ───────────────────────────────────────────────────────────────────────
     const audioPlayer = document.getElementById('audio-player');
-    const audioBaseUrl = 'https://symphonyguide.gt.tc/audio/';
     
-    // Costruisce l'URL completo del file (es. https://symphonyguide.gt.tc/audio/1.mp3)
-    const audioFileName = `${data.day}.mp3`;
-    audioPlayer.src = `${audioBaseUrl}${audioFileName}`; 
-    
-    // Per debug, visualizza l'URL in console
-    console.log(`Tentativo di caricamento audio: ${audioPlayer.src}`); 
-    
+    if (data.driveId) {
+        // Costruisce l'URL di download diretto da Google Drive usando l'ID
+        const driveUrl = `https://drive.google.com/uc?export=download&id=${data.driveId}`;
+        audioPlayer.src = driveUrl;
+    } else {
+        // Fallback: Se driveId non è impostato, usa l'URL originale (che causa CORS)
+        const audioBaseUrl = 'https://symphonyguide.gt.tc/audio/';
+        audioPlayer.src = `${audioBaseUrl}${data.day}.mp3`;
+    }
+
     audioPlayer.load();
-    // Non è necessario usare audioPlayer.play() qui; l'utente dovrebbe premere play.
     
     // Ripristina e riavvia il player Deezer
     const deezerUrl = `https://widget.deezer.com/widget/dark/track/${data.deezerId}?tracklist=false`;

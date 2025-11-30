@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Audio Google Drive</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #8B0000;
+            margin-top: 0;
+        }
+        audio {
+            width: 100%;
+            margin: 20px 0;
+        }
+        button {
+            background: #8B0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #660000;
+        }
+        .info {
+            background: #fffacd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h2>🎵 Test Audio Google Drive</h2>
+        
+        <div class="info">
+            <strong>Test dei link audio:</strong><br>
+            Questo file testa diversi metodi per caricare audio da Google Drive.
+        </div>
+
+        <div id="status"></div>
+
+        <h3>Metodo 1: Link diretto uc?export=download</h3>
+        <audio id="player1" controls preload="metadata">
+            <source src="https://docs.google.com/uc?export=download&id=1j9UPVNnvVIohGutXa_aL3l0dO9N3kd6E" type="audio/mpeg">
+        </audio>
+        <button onclick="testAudio(1)">▶️ Testa Audio 1</button>
+
+        <h3>Metodo 2: Link embed</h3>
+        <audio id="player2" controls preload="metadata">
+            <source src="https://drive.google.com/uc?export=download&id=1j9UPVNnvVIohGutXa_aL3l0dO9N3kd6E" type="audio/mpeg">
+        </audio>
+        <button onclick="testAudio(2)">▶️ Testa Audio 2</button>
+
+        <h3>Metodo 3: Caricamento dinamico</h3>
+        <audio id="player3" controls preload="metadata"></audio>
+        <button onclick="loadAudio3()">📥 Carica Audio 3</button>
+
+        <h3>Metodo 4: Iframe embed</h3>
+        <iframe src="https://drive.google.com/file/d/1j9UPVNnvVIohGutXa_aL3l0dO9N3kd6E/preview" 
+                width="100%" 
+                height="150" 
+                allow="autoplay">
+        </iframe>
+    </div>
+
+    <div class="test-box">
+        <h2>📋 Log Eventi</h2>
+        <div id="log" style="font-family: monospace; font-size: 12px; background: #f9f9f9; padding: 15px; border-radius: 5px; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+        const status = document.getElementById('status');
+
+        function addLog(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#d00' : type === 'success' ? '#0a0' : '#333';
+            log.innerHTML = `<div style="color: ${color}">[${time}] ${message}</div>` + log.innerHTML;
+        }
+
+        function testAudio(num) {
+            const player = document.getElementById(`player${num}`);
+            addLog(`Test Audio ${num}: Tentativo di riproduzione...`);
+            
+            player.play()
+                .then(() => {
+                    addLog(`Test Audio ${num}: ✅ Riproduzione avviata con successo!`, 'success');
+                    showStatus('success', `Audio ${num} funziona! 🎉`);
+                })
+                .catch(err => {
+                    addLog(`Test Audio ${num}: ❌ Errore - ${err.message}`, 'error');
+                    showStatus('error', `Audio ${num} non funziona: ${err.message}`);
+                });
+        }
+
+        function loadAudio3() {
+            const player = document.getElementById('player3');
+            addLog('Test Audio 3: Caricamento dinamico...');
+            
+            player.src = 'https://docs.google.com/uc?export=download&id=1j9UPVNnvVIohGutXa_aL3l0dO9N3kd6E';
+            player.load();
+            
+            player.addEventListener('canplay', () => {
+                addLog('Test Audio 3: ✅ File caricato, pronto per la riproduzione', 'success');
+                player.play();
+            }, { once: true });
+
+            player.addEventListener('error', (e) => {
+                addLog(`Test Audio 3: ❌ Errore nel caricamento - ${player.error?.message || 'Sconosciuto'}`, 'error');
+            }, { once: true });
+        }
+
+        function showStatus(type, message) {
+            status.className = `status ${type}`;
+            status.textContent = message;
+        }
+
+        // Monitora tutti i player
+        for (let i = 1; i <= 3; i++) {
+            const player = document.getElementById(`player${i}`);
+            
+            player.addEventListener('loadstart', () => addLog(`Player ${i}: Inizio caricamento...`));
+            player.addEventListener('loadedmetadata', () => addLog(`Player ${i}: Metadati caricati`, 'success'));
+            player.addEventListener('canplay', () => addLog(`Player ${i}: Pronto per la riproduzione`, 'success'));
+            player.addEventListener('error', () => addLog(`Player ${i}: Errore - ${player.error?.message || 'Sconosciuto'}`, 'error'));
+            player.addEventListener('play', () => addLog(`Player ${i}: Riproduzione avviata`, 'success'));
+            player.addEventListener('pause', () => addLog(`Player ${i}: Riproduzione in pausa`));
+        }
+
+        addLog('Pagina di test caricata. Prova i diversi metodi usando i pulsanti.', 'success');
+    </script>
+</body>
+</html>

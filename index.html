@@ -42,7 +42,7 @@
             <div class="modal-body">
                 <div class="audio-section">
                     <h3>ðŸŽ™ï¸ Ascolta il capitolo</h3>
-                    <audio id="audio-player" controls preload="metadata"></audio>
+                    <iframe id="audio-player" style="width: 100%; height: 150px; border: none; border-radius: 10px;" allow="autoplay"></iframe>
                 </div>
                 <figure class="illustration">
                     <img id="modal-image" src="" alt="">
@@ -1183,37 +1183,36 @@ function openDay(day) {
     document.getElementById('modal-image').src = data.image;
     document.getElementById('modal-image').alt = data.title;
 
-    // AGGIORNA IL PERCORSO DEI FILES AUDIO DA GOOGLE DRIVE
+    // AGGIORNA IL PERCORSO DEI FILES AUDIO DA GOOGLE DRIVE (con iframe preview)
     const audioPlayer = document.getElementById('audio-player');
     const audioFiles = {
-        1: 'https://docs.google.com/uc?export=download&id=1j9UPVNnvVIohGutXa_aL3l0dO9N3kd6E',
-        2: 'https://docs.google.com/uc?export=download&id=1HBiFqaBRh4EgKErIyqsa2MsUqns4qiuj',
-        3: 'https://docs.google.com/uc?export=download&id=1YKWIFJks8t0BK6ZwqvKGrOugxkqe-Ull',
-        4: 'https://docs.google.com/uc?export=download&id=1hhP5veHzGy1On7_NC9VH-Wvjsb7LTlwh',
-        5: 'https://docs.google.com/uc?export=download&id=1LvzMJ1ZtMW_aIuIQJ5mKGxIvfj3Xzix1',
-        6: 'https://docs.google.com/uc?export=download&id=1_GnNp0JGq8PPYyCCuTkDB7kczLAxjEGJ',
-        7: 'https://docs.google.com/uc?export=download&id=1wL4BZh1GWtiiImiqysYUv6G6-TwBvb0w',
-        8: 'https://docs.google.com/uc?export=download&id=12dSfYXceu6bHYIHc_r8J9jsxV0KEpl_s',
-        9: 'https://docs.google.com/uc?export=download&id=1ceygwqsY17DYFOd_W3TgQHiFxEhSY4e8',
-        10: 'https://docs.google.com/uc?export=download&id=1RxSSRH0wKQYSoj9k99MY1nbDSfrapDU3',
-        11: 'https://docs.google.com/uc?export=download&id=1KEUpQ6rZCeOTJtwrZ3vTSz4Z6TEj6b9e',
-        12: 'https://docs.google.com/uc?export=download&id=1UedPxf76GMuTl44WiTT6yfVw7d4K8pUj',
-        13: 'https://docs.google.com/uc?export=download&id=1ZQUSpdczMXkOEasrlzW86sXnWR-cqNdm',
-        14: 'https://docs.google.com/uc?export=download&id=1E1kaTf-GITy6kM5TcP1PBBiXrkAHFXTD',
-        15: 'https://docs.google.com/uc?export=download&id=1f0tLngpth1tfVKOB1wn_L-hnQjwh36pL',
-        16: 'https://docs.google.com/uc?export=download&id=1xxVn79sEdviqHt7jB99qUpuzpmCBKBH-',
-        17: 'https://docs.google.com/uc?export=download&id=17bEYJh4Y2NaI6t7QEmerkIbuNcDbJSkp',
-        18: 'https://docs.google.com/uc?export=download&id=1YcMbWSR7nxgKAlRx0_IEV2AhFtHXwmAU',
-        19: 'https://docs.google.com/uc?export=download&id=1rhJ2zgtFpA16402oorcjiARH5ZwXa2ag',
-        20: 'https://docs.google.com/uc?export=download&id=1VL6pX06rdKsfyCwfsWy1EXX3laQ6sIDJ',
-        21: 'https://docs.google.com/uc?export=download&id=1creHABqI2UBPZyz2ro7vwm5zDF6bqAMA',
-        22: 'https://docs.google.com/uc?export=download&id=1E298DYU9RCdw887DyJv79RO3r6o8M7r6',
-        23: 'https://docs.google.com/uc?export=download&id=1Pp9V16jHF4VD12lOnilHJvereMdWehnZ',
-        24: 'https://docs.google.com/uc?export=download&id=1yDk6O4DN1s7YFQTMCDFk-h1i9yAaGcka',
-        25: 'https://docs.google.com/uc?export=download&id=1Mwi5CDHSbKIqFQagP2c22H4mPZGkb81J'
+        1: 'https://drive.google.com/file/d/1j9UPVNnvVIohGutXa_aL3l0dO9N3kd6E/preview',
+        2: 'https://drive.google.com/file/d/1HBiFqaBRh4EgKErIyqsa2MsUqns4qiuj/preview',
+        3: 'https://drive.google.com/file/d/1YKWIFJks8t0BK6ZwqvKGrOugxkqe-Ull/preview',
+        4: 'https://drive.google.com/file/d/1hhP5veHzGy1On7_NC9VH-Wvjsb7LTlwh/preview',
+        5: 'https://drive.google.com/file/d/1LvzMJ1ZtMW_aIuIQJ5mKGxIvfj3Xzix1/preview',
+        6: 'https://drive.google.com/file/d/1_GnNp0JGq8PPYyCCuTkDB7kczLAxjEGJ/preview',
+        7: 'https://drive.google.com/file/d/1wL4BZh1GWtiiImiqysYUv6G6-TwBvb0w/preview',
+        8: 'https://drive.google.com/file/d/12dSfYXceu6bHYIHc_r8J9jsxV0KEpl_s/preview',
+        9: 'https://drive.google.com/file/d/1ceygwqsY17DYFOd_W3TgQHiFxEhSY4e8/preview',
+        10: 'https://drive.google.com/file/d/1RxSSRH0wKQYSoj9k99MY1nbDSfrapDU3/preview',
+        11: 'https://drive.google.com/file/d/1KEUpQ6rZCeOTJtwrZ3vTSz4Z6TEj6b9e/preview',
+        12: 'https://drive.google.com/file/d/1UedPxf76GMuTl44WiTT6yfVw7d4K8pUj/preview',
+        13: 'https://drive.google.com/file/d/1ZQUSpdczMXkOEasrlzW86sXnWR-cqNdm/preview',
+        14: 'https://drive.google.com/file/d/1E1kaTf-GITy6kM5TcP1PBBiXrkAHFXTD/preview',
+        15: 'https://drive.google.com/file/d/1f0tLngpth1tfVKOB1wn_L-hnQjwh36pL/preview',
+        16: 'https://drive.google.com/file/d/1xxVn79sEdviqHt7jB99qUpuzpmCBKBH-/preview',
+        17: 'https://drive.google.com/file/d/17bEYJh4Y2NaI6t7QEmerkIbuNcDbJSkp/preview',
+        18: 'https://drive.google.com/file/d/1YcMbWSR7nxgKAlRx0_IEV2AhFtHXwmAU/preview',
+        19: 'https://drive.google.com/file/d/1rhJ2zgtFpA16402oorcjiARH5ZwXa2ag/preview',
+        20: 'https://drive.google.com/file/d/1VL6pX06rdKsfyCwfsWy1EXX3laQ6sIDJ/preview',
+        21: 'https://drive.google.com/file/d/1creHABqI2UBPZyz2ro7vwm5zDF6bqAMA/preview',
+        22: 'https://drive.google.com/file/d/1E298DYU9RCdw887DyJv79RO3r6o8M7r6/preview',
+        23: 'https://drive.google.com/file/d/1Pp9V16jHF4VD12lOnilHJvereMdWehnZ/preview',
+        24: 'https://drive.google.com/file/d/1yDk6O4DN1s7YFQTMCDFk-h1i9yAaGcka/preview',
+        25: 'https://drive.google.com/file/d/1Mwi5CDHSbKIqFQagP2c22H4mPZGkb81J/preview'
     };
     audioPlayer.src = audioFiles[data.day];
-    audioPlayer.load();
 
     const deezerUrl = `https://widget.deezer.com/widget/dark/track/${data.deezerId}?tracklist=false`;
     document.getElementById('deezer-player').src = deezerUrl;
@@ -1227,10 +1226,7 @@ function closeModal() {
     document.getElementById('modal').classList.remove('active');
     document.body.style.overflow = '';
     document.getElementById('deezer-player').src = '';
-
-    const audioPlayer = document.getElementById('audio-player');
-    audioPlayer.pause();
-    audioPlayer.src = '';
+    document.getElementById('audio-player').src = '';
 }
 
 document.getElementById('modal').addEventListener('click', (e) => {

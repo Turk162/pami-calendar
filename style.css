@@ -16,13 +16,19 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Crimson Text', Georgia, serif;
-            background: linear-gradient(180deg, var(--forest-dark) 0%, var(--forest) 50%, var(--burgundy-dark) 100%);
-            min-height: 100vh;
-            color: var(--cream);
-            overflow-x: hidden;
-        }
+/* Modifica: Cambia il font di base in un font Times-like classico */
+body {
+    /* Sostituisci 'Crimson Text' con 'Times New Roman' */
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    background: linear-gradient(180deg, var(--forest-dark) 0%, var(--forest) 50%, var(--burgundy-dark) 100%);
+    min-height: 100vh;
+    color: var(--cream);
+    overflow-x: hidden;
+}
+
+/* ... il resto del CSS rimane invariato fino a qui ... */
+
+
 
         /* EFFETTO NEVE */
         .snowflakes {
@@ -323,14 +329,15 @@
             margin-bottom: 1em;
         }
 
-        .story-text p:first-child::first-letter {
-            font-family: 'Cinzel Decorative', serif;
-            font-size: 3.5rem;
-            float: left;
-            line-height: 1;
-            padding-right: 0.5rem;
-            color: var(--burgundy);
-        }
+.story-text p:first-child::first-letter {
+    /* Sostituisci 'Cinzel Decorative' con un font serif classico */
+    font-family: 'Times New Roman', Times, serif; 
+    font-size: 3.5rem;
+    float: left;
+    line-height: 1;
+    padding-right: 0.5rem;
+    color: var(--burgundy); /* Questo usa la variabile colore Bordeaux definita in :root */
+}
 
         .quote-box {
             clear: both;

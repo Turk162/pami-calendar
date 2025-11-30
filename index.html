@@ -1068,7 +1068,7 @@ text: `<p>Scrooge non se lo fece dire due volte e vi si tenne saldo.
             }
         ];
 
-  // ═══════════════════════════════════════════════════════════════════════
+ // ═══════════════════════════════════════════════════════════════════════
 // FUNZIONI
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -1091,10 +1091,10 @@ function createSnowflakes() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// 1) CONTROLLA SE UN GIORNO È SBLOCCATO (Con Giorno 1 sempre aperto)
+// CONTROLLA SE UN GIORNO È SBLOCCATO (Giorno 1 sempre aperto)
 // ═══════════════════════════════════════════════════════════════════════
 function isDayUnlocked(day) {
-    // ECCEZIONE: Il Giorno 1 è sempre sbloccato, indipendentemente dalla data odierna
+    // ECCEZIONE: Il Giorno 1 è sempre sbloccato
     if (day === 1) {
         return true;
     }
@@ -1103,20 +1103,18 @@ function isDayUnlocked(day) {
     const today = new Date();
     const currentYear = today.getFullYear();
 
-    // Determina l'anno dell'Avvento
     let adventYear = currentYear;
 
     // Crea la data del giorno dell'avvento (1-25 dicembre)
     const dayDate = new Date(adventYear, 11, day); // Mese 11 = Dicembre
 
-    // Ritorna TRUE solo se oggi è >= la data del giorno
+    // Sblocca se oggi è >= la data del giorno
     return today >= dayDate;
 }
 
 // CONTROLLA SE È OGGI
 function isToday(day) {
     const today = new Date();
-    // Usa il mese 11 (Dicembre) e confronta il giorno
     return today.getMonth() === 11 && today.getDate() === day;
 }
 
@@ -1154,14 +1152,15 @@ function generateCalendar() {
     });
 }
 
-// APRI UN GIORNO (Funzione Asincrona per il caricamento del file)
-async function openDay(day) {
+// ═══════════════════════════════════════════════════════════════════════
+// APRI UN GIORNO (Rimosso 'async' e il 'fetch' per usare il testo inline)
+// ═══════════════════════════════════════════════════════════════════════
+function openDay(day) {
     const data = adventData.find(d => d.day === day);
     if (!data) return;
 
     // Blocco di sicurezza per i giorni futuri
     if (!isDayUnlocked(day)) {
-        // Animazione opzionale per il giorno bloccato (richiede il CSS .shake)
         const dayBox = document.querySelector(`.day-box[data-day="${day}"]`);
         dayBox.classList.add('shake');
         setTimeout(() => dayBox.classList.remove('shake'), 500);
@@ -1176,41 +1175,17 @@ async function openDay(day) {
     document.getElementById('modal-stave').textContent = data.stave;
     document.getElementById('modal-title').textContent = `"${data.title}"`;
     document.getElementById('modal-day').textContent = `Giorno ${day}`;
+    
+    // TORNA A USARE IL TESTO DIRETTO DA adventData
+    document.getElementById('modal-text').innerHTML = data.text; 
 
-    const storyTextDiv = document.getElementById('modal-text');
-    // Mostra un messaggio di caricamento
-    storyTextDiv.innerHTML = '<p>Caricamento storia...</p>';
-
-    // CARICAMENTO DEL CONTENUTO HTML DAL FILE ESTERNO (FETCH)
-    try {
-        // data.text contiene il percorso del file (es. storia/giorno_1.html)
-        const response = await fetch(data.text);
-
-        if (!response.ok) {
-            throw new Error(`Impossibile caricare il file: ${response.status} ${response.statusText}`);
-        }
-
-        const storyContent = await response.text();
-        // Inserisce il contenuto HTML del file nel modal
-        storyTextDiv.innerHTML = storyContent;
-
-    } catch (error) {
-        console.error('Errore durante il caricamento della storia:', error);
-        storyTextDiv.innerHTML = `<p style="color: red;">⚠️ Errore nel caricamento della storia. Riprova più tardi. Verificare il percorso <code>${data.text}</code></p>`;
-    }
-    // FINE CARICAMENTO FILE
-
-    // Popola il resto delle informazioni statiche
     document.getElementById('modal-quote').textContent = data.quote;
     document.getElementById('modal-image').src = data.image;
     document.getElementById('modal-image').alt = data.title;
 
-    // ───────────────────────────────────────────────────────────────────────
-    // 2) AGGIORNA IL PERCORSO DEI FILES AUDIO
-    // ───────────────────────────────────────────────────────────────────────
+    // AGGIORNA IL PERCORSO DEI FILES AUDIO
     const audioPlayer = document.getElementById('audio-player');
     const audioBaseUrl = 'https://symphonyguide.gt.tc/audio/';
-    // Imposta la nuova sorgente, e.g., https://symphonyguide.gt.tc/audio/1.mp3
     audioPlayer.src = `${audioBaseUrl}${data.day}.mp3`;
     audioPlayer.load();
 
